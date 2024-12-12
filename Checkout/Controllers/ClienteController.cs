@@ -26,8 +26,8 @@ namespace Checkout.Controllers
         }
 
 
-        //[HttpGet("{id}")]
-        private async Task<ActionResult<Cliente>> ConsultarClientePorId(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Cliente>> ConsultarClientePorId(int id)
         {
             var cliente = await _clienteService.ConsultarClientePorId(id);
             if (cliente == null)
