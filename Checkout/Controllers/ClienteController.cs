@@ -18,15 +18,16 @@ namespace Checkout.Controllers
             _clienteService = clienteService;
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<ClienteComEnderecosDto>>> ListarClientesComEnderecos()
-        //{
-        //    var clientes = await _clienteService.ListarClientesComEnderecos();
-        //    return Ok(clientes);
-        //}
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ClienteComEnderecosDto>>> ListarClientesComEnderecos(int userIds)
+        {
+            var clientes = await _clienteService.ListarClientesComEnderecos(userIds);
+            return Ok(clientes);
+        }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> ConsultarClientePorId(int id)
+
+        //[HttpGet("{id}")]
+        private async Task<ActionResult<Cliente>> ConsultarClientePorId(int id)
         {
             var cliente = await _clienteService.ConsultarClientePorId(id);
             if (cliente == null)
@@ -44,37 +45,37 @@ namespace Checkout.Controllers
             return CreatedAtAction(nameof(ConsultarClientePorId), new { id = cliente.Id }, cliente);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> AtualizarCliente(int id, [FromBody] Cliente cliente)
-        {
-            if (cliente == null || string.IsNullOrEmpty(cliente.Nome) || string.IsNullOrEmpty(cliente.CPF))
-            {
-                return BadRequest("Nome e CPF são obrigatórios.");
-            }
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult> AtualizarCliente(int id, [FromBody] Cliente cliente)
+        //{
+        //    if (cliente == null || string.IsNullOrEmpty(cliente.Nome) || string.IsNullOrEmpty(cliente.CPF))
+        //    {
+        //        return BadRequest("Nome e CPF são obrigatórios.");
+        //    }
 
-            var atualizado = await _clienteService.AtualizarCliente(id);
-            if (!atualizado)
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
+        //    var atualizado = await _clienteService.AtualizarCliente(id);
+        //    if (!atualizado)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return NoContent();
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletarCliente(int id)
-        {
-            var cliente = await _clienteService.ConsultarClientePorId(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult> DeletarCliente(int id)
+        //{
+        //    var cliente = await _clienteService.ConsultarClientePorId(id);
+        //    if (cliente == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var deletado = await _clienteService.DeletarCliente(id, cliente);
-            if (!deletado)
-            {
-                return BadRequest();
-            }
-            return NoContent();
-        }
+        //    var deletado = await _clienteService.DeletarCliente(id, cliente);
+        //    if (!deletado)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    return NoContent();
+        //}
     }
 }

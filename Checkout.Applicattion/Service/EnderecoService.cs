@@ -29,7 +29,7 @@ namespace Checkout.Applicattion.Service
         {
             var cliente = await _clienteRepository.ConsultarClientePorId(iD);
             var endereco = await _context.Enderecos.FindAsync(iD);
-
+            
         }
 
         public async Task<Endereco> ConsultarEnderecoPorId(int id)

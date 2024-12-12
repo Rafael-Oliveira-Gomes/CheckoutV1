@@ -9,6 +9,6 @@ namespace Checkout.Applicattion.Interface
         Task<Cliente> ConsultarClientePorId(int id);
         Task<bool> DeletarCliente(int id, Cliente Cliente);
         Task<bool> AtualizarCliente(int id);
-        //Task<IEnumerable<ClienteComEnderecosDto>> ListarClientesComEnderecos();
+        Task<IEnumerable<ClienteComEnderecosDto>> ListarClientesComEnderecos(int userId);
     }
 }
