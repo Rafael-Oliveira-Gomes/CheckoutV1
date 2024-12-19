@@ -59,6 +59,9 @@ namespace Checkout.Infrastructure.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClienteId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Complemento")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -76,25 +79,36 @@ namespace Checkout.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId")
-                        .IsUnique();
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ClienteId1")
+                        .IsUnique()
+                        .HasFilter("[ClienteId1] IS NOT NULL");
 
                     b.ToTable("Enderecos");
                 });
 
             modelBuilder.Entity("Checkout.Dominio.Entidades.Endereco", b =>
                 {
-                    b.HasOne("Checkout.Dominio.Entidades.Cliente", null)
-                        .WithOne("Enderecos")
-                        .HasForeignKey("Checkout.Dominio.Entidades.Endereco", "ClienteId")
+                    b.HasOne("Checkout.Dominio.Entidades.Cliente", "Cliente")
+                        .WithMany("Enderecos")
+                        .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Checkout.Dominio.Entidades.Cliente", null)
+                        .WithOne("Endereco")
+                        .HasForeignKey("Checkout.Dominio.Entidades.Endereco", "ClienteId1");
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Checkout.Dominio.Entidades.Cliente", b =>
                 {
-                    b.Navigation("Enderecos")
+                    b.Navigation("Endereco")
                         .IsRequired();
+
+                    b.Navigation("Enderecos");
                 });
 #pragma warning restore 612, 618
         }

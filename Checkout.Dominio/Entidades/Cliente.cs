@@ -6,8 +6,8 @@
         public string Nome { get; set; }
         public int Telefone { get; set; }
         public string CPF { get; set; }
-        public virtual Endereco Enderecos { get; set; }
-
+        public virtual Endereco Endereco { get; set; }
+        public virtual ICollection<Endereco> Enderecos { get; set; } = new List<Endereco>();
         public Cliente()
         {
         }

@@ -5,7 +5,7 @@
 namespace Checkout.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class iniital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,8 @@ namespace Checkout.Infrastructure.Migrations
                     Numero = table.Column<int>(type: "int", nullable: false),
                     Complemento = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: false)
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    ClienteId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,13 +48,24 @@ namespace Checkout.Infrastructure.Migrations
                         principalTable: "Clientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Enderecos_Clientes_ClienteId1",
+                        column: x => x.ClienteId1,
+                        principalTable: "Clientes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Enderecos_ClienteId",
                 table: "Enderecos",
-                column: "ClienteId",
-                unique: true);
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enderecos_ClienteId1",
+                table: "Enderecos",
+                column: "ClienteId1",
+                unique: true,
+                filter: "[ClienteId1] IS NOT NULL");
         }
 
         /// <inheritdoc />
