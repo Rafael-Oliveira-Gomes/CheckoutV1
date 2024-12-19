@@ -22,11 +22,33 @@ namespace Checkout.Applicattion.Service
             _enderecoRepository = enderecoRepository;
         }
 
-        public async Task SalvarCliente(Cliente cliente)
+        public async Task SalvarCliente(ClienteComEnderecosDto clienteDto)
         {
+            var cliente = new Cliente()
+            {
+                CPF = clienteDto.CPF,
+                Nome = clienteDto.Nome,
+                Telefone = clienteDto.Telefone,
+            };
+
+            foreach (var enderecoDto in clienteDto.Enderecos)
+            {
+                var endereco = new Endereco()
+                {
+                    Rua = enderecoDto.Rua,
+                    CEP = enderecoDto.CEP,
+                    Complemento = enderecoDto.Complemento,
+                    Descricao = enderecoDto.Descricao,
+                    Numero = enderecoDto.Numero,
+                    Cliente = cliente  
+                };
+                cliente.Enderecos.Add(endereco); 
+            }
+
             _context.Clientes.Add(cliente);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<Cliente> ConsultarClientePorId(int id)
         {
@@ -51,33 +73,52 @@ namespace Checkout.Applicattion.Service
         public async Task<IEnumerable<ClienteComEnderecosDto>> ListarClientesComEnderecos(int userId)
         {
             var cliente = await _clienteRepository.ConsultarClientePorId(userId);
-            var endereco = await _enderecoRepository.ConsultarEnderecoPorUserId(userId);
             if (cliente == null)
             {
-                return null; 
+                return null;
             }
 
-            var enderecoDto = new EnderecoDto
+            var enderecosDto = cliente.Enderecos.Select(e => new EnderecoDto
             {
-                Id = cliente.Enderecos.Id,
-                Rua = cliente.Enderecos.Rua,
-                CEP = cliente.Enderecos.CEP,
-                Complemento = cliente.Enderecos.Complemento,
-                Descricao = cliente.Enderecos.Descricao,
-                Numero = cliente.Enderecos.Numero
-            };
+                Rua = e.Rua,
+                CEP = e.CEP,
+                Complemento = e.Complemento,
+                Descricao = e.Descricao,
+                Numero = e.Numero
+            }).ToList();
 
             var clienteComEndereco = new ClienteComEnderecosDto
             {
-                ClienteId = cliente.Id,
                 Nome = cliente.Nome,
                 CPF = cliente.CPF,
                 Telefone = cliente.Telefone,
-                Enderecos = new List<EnderecoDto> { enderecoDto }
+                Enderecos = enderecosDto
             };
 
-
             return new List<ClienteComEnderecosDto> { clienteComEndereco };
+        }
+
+
+        public async Task<IEnumerable<ClienteComEnderecosDto>> ListarTodosClientesComEnderecos()
+        {
+            var clientes = await _context.Clientes.Include(c => c.Enderecos).ToListAsync();
+
+            var clientesComEnderecosDto = clientes.Select(cliente => new ClienteComEnderecosDto
+            {
+                Nome = cliente.Nome,
+                CPF = cliente.CPF,
+                Telefone = cliente.Telefone,
+                Enderecos = cliente.Enderecos.Select(e => new EnderecoDto
+                {
+                    Rua = e.Rua,
+                    CEP = e.CEP,
+                    Complemento = e.Complemento,
+                    Descricao = e.Descricao,
+                    Numero = e.Numero
+                }).ToList()
+            }).ToList();
+
+            return clientesComEnderecosDto;
         }
     }
 }
